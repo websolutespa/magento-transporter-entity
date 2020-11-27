@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright © Websolute spa. All rights reserved.
+  ~ See COPYING.txt for license details.
+  -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Websolute\TransporterEntity\Api\EntityRepositoryInterface" type="Websolute\TransporterEntity\Model\EntityRepository"/>
+    <preference for="Websolute\TransporterEntity\Api\Data\EntityInterface" type="Websolute\TransporterEntity\Model\EntityModel"/>
+    <preference for="Websolute\TransporterEntity\Api\Data\EntitySearchResultInterface" type="Websolute\TransporterEntity\Model\EntitySearchResult"/>
+</config>

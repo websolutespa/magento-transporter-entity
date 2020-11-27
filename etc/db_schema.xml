@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright © Websolute spa. All rights reserved.
+  ~ See COPYING.txt for license details.
+  -->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="transporter_entity" resource="default" engine="innodb" comment="Transporter Entity Table">
+        <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="int" name="activity_id" padding="10" unsigned="true" nullable="false"/>
+        <column xsi:type="varchar" name="type" nullable="false" length="255"/>
+        <column xsi:type="varchar" name="identifier" nullable="false" length="255"/>
+        <column xsi:type="longtext" name="data_original" nullable="false" comment="Data before manipulation"/>
+        <column xsi:type="longtext" name="data_manipulated" nullable="true" comment="Data after manipulation"/>
+        <column xsi:type="mediumtext" name="extra" nullable="true" comment="Extra data"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Row Creation Time"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Row Modification Time"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="TRANSPORTER_ENTITY_ID_ACTIVITY_ID"
+                    table="transporter_entity" column="activity_id"
+                    referenceTable="transporter_activity" referenceColumn="activity_id"
+                    onDelete="CASCADE"/>
+        <index referenceId="TRANSPORTER_ACTIVITY_ID" indexType="btree">
+            <column name="activity_id"/>
+        </index>
+    </table>
+</schema>
