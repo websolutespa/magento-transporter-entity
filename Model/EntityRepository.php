@@ -273,6 +273,7 @@ class EntityRepository implements EntityRepositoryInterface
     {
         $collection = $this->collectionFactory->create();
         $collection->addFieldToFilter(EntityModel::ACTIVITY_ID, ['eq' => $activityId]);
+        $collection->addFieldToSelect(EntityModel::DATA_ORIGINAL);
         $collection->addFieldToSelect(EntityModel::DATA_MANIPULATED);
         $collection->addFieldToSelect(EntityModel::TYPE);
         $collection->addFieldToSelect(EntityModel::IDENTIFIER);
