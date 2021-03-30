@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright © Websolute spa. All rights reserved.
- * See COPYING.txt for license details.
+ * See LICENSE and/or COPYING.txt for license details.
  */
 
 declare(strict_types=1);
@@ -98,4 +98,14 @@ interface EntityInterface extends ExtensibleDataInterface
      * @throws Exception
      */
     public function getUpdatedAt(): DateTime;
+
+    /**
+     * @return bool
+     */
+    public function isSkip(): bool;
+
+    /**
+     * @return void
+     */
+    public function skip();
 }

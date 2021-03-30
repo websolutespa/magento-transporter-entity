@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
   ~ Copyright © Websolute spa. All rights reserved.
-  ~ See COPYING.txt for license details.
+  ~ See LICENSE and/or COPYING.txt for license details.
   -->
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
@@ -22,6 +22,11 @@
                     table="transporter_entity" column="activity_id"
                     referenceTable="transporter_activity" referenceColumn="activity_id"
                     onDelete="CASCADE"/>
+        <constraint xsi:type="unique" referenceId="TRANSPORTER_ENTITY_UNIQUE">
+            <column name="activity_id"/>
+            <column name="type"/>
+            <column name="identifier"/>
+        </constraint>
         <index referenceId="TRANSPORTER_ACTIVITY_ID" indexType="btree">
             <column name="activity_id"/>
         </index>

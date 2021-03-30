@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright © Websolute spa. All rights reserved.
- * See COPYING.txt for license details.
+ * See LICENSE and/or COPYING.txt for license details.
  */
 
 declare(strict_types=1);
@@ -72,9 +72,7 @@ class EntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return EntityInterface
-     * @throws NoSuchEntityException
+     * @inheritDoc
      */
     public function getById(int $id): EntityInterface
     {
@@ -87,9 +85,7 @@ class EntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param EntityInterface $entity
-     * @return EntityInterface
-     * @throws AlreadyExistsException
+     * @inheritDoc
      */
     public function save(EntityInterface $entity)
     {
@@ -98,8 +94,7 @@ class EntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param EntityInterface $entity
-     * @throws Exception
+     * @inheritDoc
      */
     public function delete(EntityInterface $entity)
     {
@@ -107,8 +102,7 @@ class EntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param SearchCriteriaInterface $searchCriteria
-     * @return EntitySearchResultInterface
+     * @inheritDoc
      */
     public function getList(SearchCriteriaInterface $searchCriteria): EntitySearchResultInterface
     {
@@ -180,8 +174,7 @@ class EntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param int $activityId
-     * @return array
+     * @inheritDoc
      */
     public function getAllByActivityIdGroupedByIdentifier(int $activityId): array
     {
@@ -202,14 +195,12 @@ class EntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param int $activityId
-     * @return EntityInterface[]
+     * @inheritDoc
      */
     public function getAllByActivityId(int $activityId): array
     {
         $collection = $this->collectionFactory->create();
         $collection->addFieldToFilter(EntityModel::ACTIVITY_ID, ['eq' => $activityId]);
-        $collection->load();
 
         /** @var EntityInterface[] $entities */
         $entities = $collection->getItems();
@@ -218,8 +209,7 @@ class EntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param int $activityId
-     * @return array
+     * @inheritDoc
      */
     public function getAllIdentifiersByActivityId(int $activityId): array
     {
@@ -231,9 +221,7 @@ class EntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param int $activityId
-     * @param string $identifier
-     * @return array
+     * @inheritDoc
      */
     public function getAllByActivityIdAndIdentifierGroupedByIdentifier(int $activityId, string $identifier): array
     {
@@ -249,15 +237,13 @@ class EntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param int $activityId
-     * @return EntityInterface[]
+     * @inheritDoc
      */
     public function getAllByActivityIdAndIdentifier(int $activityId, string $identifier): array
     {
         $collection = $this->collectionFactory->create();
         $collection->addFieldToFilter(EntityModel::ACTIVITY_ID, ['eq' => $activityId]);
         $collection->addFieldToFilter(EntityModel::IDENTIFIER, ['eq' => $identifier]);
-        $collection->load();
 
         /** @var EntityInterface[] $entities */
         $entities = $collection->getItems();
@@ -266,25 +252,44 @@ class EntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param int $activityId
-     * @return array
+     * @inheritDoc
+     */
+    public function getByActivityIdAndIdentifierAndType(int $activityId, string $identifier, string $type): EntityInterface
+    {
+        $collection = $this->collectionFactory->create();
+        $collection->addFieldToFilter(EntityModel::ACTIVITY_ID, ['eq' => $activityId]);
+        $collection->addFieldToFilter(EntityModel::IDENTIFIER, ['eq' => $identifier]);
+        $collection->addFieldToFilter(EntityModel::TYPE, ['eq' => $type]);
+
+        return $collection->getFirstItem();
+    }
+
+    /**
+     * @inheritDoc
      */
     public function getAllDataManipulatedByActivityIdGroupedByIdentifier(int $activityId): array
     {
         $collection = $this->collectionFactory->create();
+        $collection->addFieldToSelect('*');
         $collection->addFieldToFilter(EntityModel::ACTIVITY_ID, ['eq' => $activityId]);
-        $collection->addFieldToSelect(EntityModel::DATA_ORIGINAL);
-        $collection->addFieldToSelect(EntityModel::DATA_MANIPULATED);
-        $collection->addFieldToSelect(EntityModel::TYPE);
-        $collection->addFieldToSelect(EntityModel::IDENTIFIER);
-        $collection->load();
 
         /** @var EntityInterface[] $entities */
         $entities = $collection->getItems();
 
         $result = [];
+        $identifierToSkip = [];
         foreach ($entities as $entity) {
             $identifier = $entity->getIdentifier();
+
+            // Handle skipped entry
+            if ($entity->isSkip()) {
+                $identifierToSkip[] = $identifier;
+                continue;
+            }
+            if (array_key_exists($identifier, $identifierToSkip)) {
+                continue;
+            }
+
             $type = $entity->getType();
             $manipulatedData = $this->serializer->unserialize($entity->getDataManipulated());
             if (!array_key_exists($identifier, $result)) {

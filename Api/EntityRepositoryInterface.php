@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright © Websolute spa. All rights reserved.
- * See COPYING.txt for license details.
+ * See LICENSE and/or COPYING.txt for license details.
  */
 
 declare(strict_types=1);
@@ -55,6 +55,15 @@ interface EntityRepositoryInterface
      * @throws Exception
      */
     public function getAllByActivityIdAndIdentifier(int $activityId, string $identifier): array;
+
+    /**
+     * @param int $activityId
+     * @param string $identifier
+     * @param string $type
+     * @return EntityInterface
+     * @throws Exception
+     */
+    public function getByActivityIdAndIdentifierAndType(int $activityId, string $identifier, string $type): EntityInterface;
 
     /**
      * @param int $activityId

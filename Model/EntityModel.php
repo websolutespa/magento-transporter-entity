@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright © Websolute spa. All rights reserved.
- * See COPYING.txt for license details.
+ * See LICENSE and/or COPYING.txt for license details.
  */
 
 declare(strict_types=1);
@@ -163,6 +163,22 @@ class EntityModel extends AbstractExtensibleModel implements EntityInterface
     public function getUpdatedAt(): DateTime
     {
         return new DateTime($this->getData(self::UPDATED_AT));
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSkip(): bool
+    {
+        return (bool)$this->getExtra()->getData('skip');
+    }
+
+    /**
+     * @return void
+     */
+    public function skip()
+    {
+        $this->setExtra($this->getExtra()->setData('skip', true));
     }
 
     protected function _construct()
